@@ -1,10 +1,12 @@
 beforeEach( () => {
-  cy.visit('http://localhost:4000');
-  cy.intercept('GET', 'api/ingredients/', { fixture:'ingredients.json'})
 
-
-  // cy.wait('@ingredients');
-  // cy.visit('/');
+  cy.intercept('GET', 'api/ingredients/', { fixture:'ingredients.json'});
+  cy.intercept('GET', 'api/auth/user', { fixture: 'user.json' });
+  cy.intercept('GET', 'api/orders/all', { fixture: 'feed.json' }).as('feed');
+  cy.setCookie('accessToken', 'mockTokenForEvgeniya');
+  localStorage.setItem('refreshToken', 'mockTokenForEvgeniya');
+  cy.visit('/');
+  
 })
 
 describe('Тест работы конструктора', ()=>{
@@ -54,7 +56,6 @@ describe('Тест работы модальных окон', () => {
   });
 
   it('тест закрытия модального окна по крестику', () => {
-    с
     cy.contains('Краторная булка N-200i')
       .click();
     //находим кнопку в модалке, нажимаем
@@ -91,6 +92,74 @@ describe('Тест работы модальных окон', () => {
   })
 })
 
-describe('проверка оформления заказа', () => {
-  //
+describe('Тест оформления заказа', () => {
+  // перехватываем апи размещения заказа и проверяем авторизацию
+  beforeEach(() => {
+    cy.intercept('POST', 'api/orders', { fixture: 'order.json' }).as('order');
+
+    it('Проверка авторизации пользователя перед каждым тестом', function () {
+      cy.get('p').contains('12345').should('exist');
+    });
+  });
+
+  // добавляем в заказ флуоресцентную булку
+  it('добавляем ингредиенты в заказ', () => {
+    // добавляем в заказ флуоресцентную булку
+    cy.get(`[data-cy='ingredients-module']`)
+      .first()
+        .children()
+          .last()
+            .find('button')
+              .click();
+    // добавляем в заказ биокотлету
+    cy.get(`[data-cy='ingredients-module']`)
+      .next()
+        .next()
+          .children()
+            .first()
+              .find('button')
+                .click();
+    // добавляем в заказ соус антарианского плоскоходца
+    cy.get(`[data-cy='ingredients-module']`)
+      .last()
+        .children()
+          .last()
+            .find('button')
+              .click()
+    //нажимаем на кнопку заказа
+    cy.get(`[data-cy='constructor-module']`)
+      .children()
+        .last()
+          .find('button')
+            .click()
+    
+    cy.wait('@order')
+
+    //проверяем, что модальное окно открылось
+    cy.get(`[data-cy='modal']`)
+      .should('be.visible')
+
+    //нажимаем на кнопку закрытия
+    cy.get(`[data-cy='modal']`)
+      .find('button')
+        .click();
+
+    //проверяем, что конструктор пустой - 
+    cy.get(`[data-cy='constructor-module']`)
+      .children()
+        .first()
+          .should('contain.text', 'Выберите булки')
+
+    cy.get(`[data-cy='constructor-module']`)
+      .children()
+        .first()
+          .next()
+            .should('contain.text', 'Выберите начинку')
+
+
+    })
+
+    
+    
+  
 })
