@@ -3,7 +3,7 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { TIngredient } from '@utils-types';
 import { SerializedError } from '@reduxjs/toolkit';
 
-type TIngredientsSlice = {
+export type TIngredientsSlice = {
   ingredients: TIngredient[];
   isLoading: boolean;
   error: string | null;
@@ -31,7 +31,7 @@ export const ingredientsSlice = createSlice({
       })
       .addCase(getIngredients.rejected, (state, action) => {
         state.isLoading = false;
-        state.error = "ingredients loading error";
+        state.error = 'ingredients loading error';
       })
       .addCase(getIngredients.fulfilled, (state, action) => {
         state.isLoading = false;

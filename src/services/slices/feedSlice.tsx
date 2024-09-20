@@ -8,7 +8,7 @@ export const getFeeds = createAsyncThunk('orders/get', async () => {
   return fetchFeed;
 });
 
-type TFeedSlice = {
+export type TFeedSlice = {
   orders: TOrder[];
   isLoading: boolean;
   error: string | null;
@@ -18,7 +18,7 @@ type TFeedSlice = {
   };
 };
 
-const initialState: TFeedSlice = {
+export const initialState: TFeedSlice = {
   orders: [],
   isLoading: false,
   error: null,
@@ -40,10 +40,10 @@ export const feedSlice = createSlice({
       })
       .addCase(getFeeds.rejected, (state, action) => {
         state.isLoading = false;
-        state.error = action.error.message as string;
+        state.error = 'Ошибка загрузки ленты';
       })
       .addCase(getFeeds.fulfilled, (state, action) => {
-        state.isLoading = true;
+        state.isLoading = false;
         state.orders = action.payload.orders;
         state.feed.total = action.payload.total;
         state.feed.totalToday = action.payload.totalToday;
@@ -51,7 +51,10 @@ export const feedSlice = createSlice({
   },
   selectors: {
     selectOrders: (state) => state.orders,
-    selectFeed: (state) => state.feed
+    selectFeed: (state) => {
+      state.feed;
+      console.log(state.feed);
+    }
   }
 });
 
