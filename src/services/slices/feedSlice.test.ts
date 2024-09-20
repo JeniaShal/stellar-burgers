@@ -2,7 +2,7 @@ import { expect, test } from '@jest/globals';
 import { getFeeds, initialState, feedSlice, TFeedSlice } from './feedSlice';
 import { TFeedsResponse } from '../../utils/burger-api';
 
-const MockFeedResponse: TFeedsResponse = {
+const mockFeedResponse: TFeedsResponse = {
   success: true,
   orders: [{_id: "66ed7358119d45001b507ef4",
   status: 'done',
@@ -48,14 +48,14 @@ describe('проверим слайс feedSlice', () => {
   test('проверим getFeeds.fulfilled', () => {
     const action = {
       type: getFeeds.fulfilled.type,
-      payload: MockFeedResponse
+      payload: mockFeedResponse
     }
     const testState = feedSlice.reducer(initialState, action);
     const checkState: TFeedSlice = 
-    { orders: MockFeedResponse.orders,
+    { orders: mockFeedResponse.orders,
       feed: {
-        total: MockFeedResponse.total,
-        totalToday: MockFeedResponse.totalToday 
+        total: mockFeedResponse.total,
+        totalToday: mockFeedResponse.totalToday 
       },
       isLoading: false, 
       error: null

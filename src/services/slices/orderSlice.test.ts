@@ -2,7 +2,7 @@ import { expect, test } from '@jest/globals';
 import { TOrderResponse, TNewOrderResponse } from '../../utils/burger-api';
 import { fetchOrderByNumber, orderSlice, initialState, TOrderSlice, postOrder } from '../slices/orderSlice';
 
-const MockOrderResponse: TOrderResponse = {
+const mockOrderResponse: TOrderResponse = {
   success: true,
   orders: [{
   _id: "66ed7358119d45001b507ef4",
@@ -25,7 +25,7 @@ const MockOrderResponse: TOrderResponse = {
   ]}
 ]};
 
-const MockOrderToPostResponse: TNewOrderResponse = {
+const mockOrderToPostResponse: TNewOrderResponse = {
 success: true,
 order: {
   _id: "66ed7358119d45001b507ef4",
@@ -54,11 +54,11 @@ describe('проверим слайс orderSlice', () => {
   test('проверим fetchOrderByNumber.fulfilled', () => {
     const action = {
       type: fetchOrderByNumber.fulfilled.type,
-      payload: MockOrderResponse
+      payload: mockOrderResponse
     };
 
     const testState = orderSlice.reducer(initialState, action);
-    const checkState: TOrderSlice = {...initialState, orderRequest: true, orderData: MockOrderResponse.orders[0]};
+    const checkState: TOrderSlice = {...initialState, orderRequest: true, orderData: mockOrderResponse.orders[0]};
 
     expect(testState).toEqual(checkState);
   });
@@ -87,12 +87,12 @@ describe('проверим слайс orderSlice', () => {
   test('проверим postOrder.fulfilled', () => {
     const action = {
       type: postOrder.fulfilled.type,
-      payload: MockOrderToPostResponse
+      payload: mockOrderToPostResponse
     };
     const testState = orderSlice.reducer(initialState, action);
     const checkState: TOrderSlice = {
       ...initialState,
-      orderData: MockOrderToPostResponse.order
+      orderData: mockOrderToPostResponse.order
     };  
     expect(testState).toEqual(checkState);
   });
@@ -109,5 +109,7 @@ describe('проверим слайс orderSlice', () => {
     expect(testState).toEqual(checkState);
   });
 });
+
+
 
 
