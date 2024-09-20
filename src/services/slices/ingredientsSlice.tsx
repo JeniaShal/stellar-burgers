@@ -31,7 +31,7 @@ export const ingredientsSlice = createSlice({
       })
       .addCase(getIngredients.rejected, (state, action) => {
         state.isLoading = false;
-        state.error = action.error.message as string;
+        state.error = "ingredients loading error";
       })
       .addCase(getIngredients.fulfilled, (state, action) => {
         state.isLoading = false;
