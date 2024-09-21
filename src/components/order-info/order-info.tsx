@@ -5,7 +5,8 @@ import { TIngredient } from '@utils-types';
 import { useSelector, useDispatch } from '../../services/store';
 import {
   selectOrderData,
-  fetchOrderByNumber
+  fetchOrderByNumber,
+  clearOrderData
 } from '../../services/slices/orderSlice';
 import { selectIngredients } from '../../services/slices/ingredientsSlice';
 import { useParams } from 'react-router-dom';
@@ -20,8 +21,11 @@ export const OrderInfo: FC = () => {
   useEffect(() => {
     if (!orderData) {
       dispatch(fetchOrderByNumber(number));
+      return () => {
+        dispatch(clearOrderData());
+      };
     }
-  }, [dispatch]);
+  }, []);
 
   // {
   //   createdAt: '',
