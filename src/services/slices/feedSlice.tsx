@@ -15,6 +15,7 @@ export type TFeedSlice = {
     total: number;
     totalToday: number;
   };
+  // order: TOrder|null
 };
 
 export const initialState: TFeedSlice = {
@@ -25,12 +26,17 @@ export const initialState: TFeedSlice = {
     total: 0,
     totalToday: 0
   }
+  // order: null
 };
 
 export const feedSlice = createSlice({
   name: 'feed',
   initialState,
-  reducers: {},
+  reducers: {
+    // findOrder: (state, action: <number: number) => {
+    //   state.orders.find(order => {order.number === number} )
+    // }
+  },
   extraReducers: (builder) => {
     builder
       .addCase(getFeeds.pending, (state) => {
@@ -51,6 +57,7 @@ export const feedSlice = createSlice({
   selectors: {
     selectOrders: (state) => state.orders,
     selectFeed: (state) => state.feed
+    // selectOrder:
   }
 });
 

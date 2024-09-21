@@ -1,5 +1,9 @@
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { orderBurgerApi, getOrderByNumberApi } from '../../utils/burger-api';
+import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
+import {
+  orderBurgerApi,
+  getOrderByNumberApi,
+  TOrderResponse
+} from '../../utils/burger-api';
 import { TOrder } from '../../utils/types';
 
 export type TOrderSlice = {
@@ -30,8 +34,7 @@ export const fetchOrderByNumber = createAsyncThunk(
   'order/fetchByNumber',
   async (data: number) => {
     const orderData = await getOrderByNumberApi(data);
-    console.log(orderData);
-    return orderData.orders;
+    return orderData.orders.filter((order) => order.number === data);
   }
 );
 
@@ -50,7 +53,6 @@ export const orderSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(postOrder.rejected, (state, action) => {
-        state.orderRequest = false;
         state.isLoading = false;
         state.postOrderError = 'Ошибка размещения заказа';
       })
@@ -60,27 +62,19 @@ export const orderSlice = createSlice({
       })
       .addCase(postOrder.fulfilled, (state, action) => {
         state.orderData = action.payload.order;
-        state.isLoading = false;
         state.orderRequest = false;
+        state.isLoading = false;
       })
       .addCase(fetchOrderByNumber.rejected, (state, action) => {
-        state.orderRequest = false;
         state.isLoading = false;
         state.fetchOrderByIdError = 'Ошибка загрузки заказа';
       })
       .addCase(fetchOrderByNumber.pending, (state) => {
-        state.orderRequest = true;
         state.isLoading = true;
       })
       .addCase(fetchOrderByNumber.fulfilled, (state, action) => {
         state.isLoading = false;
-        state.orderRequest = true;
-        let res = state.orderData as TOrder;
-        res = action.payload.find((order) => {
-          if (state.orderData != null) {
-            order.number === state.orderData.number;
-          }
-        }) as TOrder;
+        state.orderData = action.payload[0];
       });
   }
 });

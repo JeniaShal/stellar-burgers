@@ -25,6 +25,7 @@ import { AppHeader, Modal, OrderInfo, IngredientDetails } from '@components';
 import { useDispatch } from '../../services/store';
 import { OrderDetailsUI } from '../ui/order-details';
 import { checkUser } from '../../services/slices/userSlice';
+// import { PageShowComponent } from '../../pages/page-show-component/page-show-component';
 
 const App = () => {
   const location = useLocation();
@@ -92,33 +93,9 @@ const App = () => {
               </ProtectedRoute>
             }
           />
-          <Route
-            path='/feed/:number'
-            element={
-              <Modal title='Детали заказа' onClose={() => navigate('/feed')}>
-                <OrderInfo />
-              </Modal>
-            }
-          />
-          <Route
-            path='/ingredients/:id'
-            element={
-              <Modal title='Детали ингредиента' onClose={() => navigate('/')}>
-                <IngredientDetails />
-              </Modal>
-            }
-          />
-          <Route
-            path='/profile/orders/:number'
-            element={
-              <Modal
-                title='Детали заказа'
-                onClose={() => navigate('/profile/orders')}
-              >
-                <OrderInfo />
-              </Modal>
-            }
-          />
+          <Route path='/feed/:number' element={<OrderInfo />} />
+          <Route path='/ingredients/:id' element={<IngredientDetails />} />
+          <Route path='/profile/orders/:number' element={<OrderInfo />} />
           <Route path='' element={<NotFound404 />} />
         </Routes>
 
