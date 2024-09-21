@@ -28,7 +28,11 @@ export const postOrder = createAsyncThunk(
 
 export const fetchOrderByNumber = createAsyncThunk(
   'order/fetchByNumber',
-  async (data: number) => getOrderByNumberApi(data)
+  async (data: number) => {
+    const orderData = await getOrderByNumberApi(data);
+    console.log(orderData);
+    return orderData.orders;
+  }
 );
 
 export const orderSlice = createSlice({
@@ -71,7 +75,12 @@ export const orderSlice = createSlice({
       .addCase(fetchOrderByNumber.fulfilled, (state, action) => {
         state.isLoading = false;
         state.orderRequest = true;
-        state.orderData = action.payload.orders[0];
+        let res = state.orderData as TOrder;
+        res = action.payload.find((order) => {
+          if (state.orderData != null) {
+            order.number === state.orderData.number;
+          }
+        }) as TOrder;
       });
   }
 });

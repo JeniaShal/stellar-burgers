@@ -7,6 +7,7 @@ import {
   selectOrderData,
   fetchOrderByNumber
 } from '../../services/slices/orderSlice';
+import { getFeeds } from '../../services/slices/feedSlice'
 import { selectIngredients } from '../../services/slices/ingredientsSlice';
 import { useParams } from 'react-router-dom';
 

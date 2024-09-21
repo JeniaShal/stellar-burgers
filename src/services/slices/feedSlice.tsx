@@ -4,7 +4,6 @@ import { TOrder } from '../../utils/types';
 
 export const getFeeds = createAsyncThunk('orders/get', async () => {
   const fetchFeed = getFeedsApi();
-  console.log(fetchFeed);
   return fetchFeed;
 });
 
@@ -51,10 +50,7 @@ export const feedSlice = createSlice({
   },
   selectors: {
     selectOrders: (state) => state.orders,
-    selectFeed: (state) => {
-      state.feed;
-      console.log(state.feed);
-    }
+    selectFeed: (state) => state.feed
   }
 });
 

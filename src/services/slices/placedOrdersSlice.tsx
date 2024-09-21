@@ -25,7 +25,7 @@ export const placedOrdersSlice = createSlice({
     builder
       .addCase(getPlacedOrders.rejected, (state, action) => {
         state.isLoading = false;
-        state.error = 'Oшибка загрузки заказов'
+        state.error = 'Oшибка загрузки заказов';
       })
       .addCase(getPlacedOrders.pending, (state) => {
         state.isLoading = true;
