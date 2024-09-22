@@ -1,19 +1,31 @@
-beforeEach( () => {
 
-  cy.intercept('GET', 'api/ingredients/', { fixture:'ingredients.json'});
-  cy.intercept('GET', 'api/auth/user', { fixture: 'user.json' });
-  cy.intercept('GET', 'api/orders/all', { fixture: 'feed.json' }).as('feed');
-  cy.setCookie('accessToken', 'mockTokenForEvgeniya');
-  localStorage.setItem('refreshToken', 'mockTokenForEvgeniya');
-  cy.visit('/');
+describe('проверка работы конструктора', () => {
+  beforeEach( () => {
+    cy.fixture('ingredients.json');
+    cy.fixture('feed.json');
+    cy.fixture('user.json');
+    cy.fixture('order.json');
+    cy.intercept({method: 'GET', url: 'api/ingredients'}, { fixture:'ingredients.json'}).as('getIngredients');
+    cy.intercept({method: 'GET', url: 'api/auth/user'}, { fixture: 'user.json' }).as('user');
+    cy.intercept({method: 'GET', url: 'api/orders/all'}, { fixture: 'feed.json' }).as('feed');
+    cy.intercept({method: 'POST', url: 'api/orders'}, { fixture: 'order.json' }).as('order');
+    cy.setCookie('accessToken', 'mockTokenForEvgeniya');
+    localStorage.setItem('refreshToken', 'mockTokenForEvgeniya');
+    cy.visit('/');
+    
+  })
   
-})
+  it('проверка работы cy.intercept', () => {
+    cy.wait('@getIngredients');
+    cy.wait('@user');
+  });
 
-describe('Тест работы конструктора', ()=>{
+
+
   it('проверка наличия ингредиента в конструкторе - булки', () => {
     //находим div с конструктором, проверяем, что в нем нет флуоресцентной булки
     cy.get(`[data-cy='constructor-module']`)
-      .should('not.contain.text', 'Флюоресцентная булка R2-D3')
+      .should('not.contain.text', 'просто какая-то булка')
   });
 
   it('добавление ингредиента в конструктор - булки', () => {
@@ -26,7 +38,7 @@ describe('Тест работы конструктора', ()=>{
               .click();
     //проверяем, что в конструкторе появилась флуоресцентная булка
     cy.get(`[data-cy='constructor-module']`)    
-              .should('contain.text', 'Флюоресцентная булка R2-D3');
+              .should('contain.text', 'просто какая-то булка');
   });
 
   it('добавление ингредиента в конструктор - другой ингредиент', ()=>{
@@ -42,13 +54,10 @@ describe('Тест работы конструктора', ()=>{
     cy.get(`[data-cy='constructor-module']`)    
       .should('contain.text', 'Биокотлета из марсианской Магнолии');
   });
-});
-
-describe('Тест работы модальных окон', () => {
           
   it('тест открытия модального окна', () => {
     //находим ссылку с кратерной булкой, нажимаем
-    cy.contains('Краторная булка N-200i')
+    cy.contains('кратЕрная булка (от слова кратер)')
       .click();
     //находим модальное окно, проверяем, что модальное окно видимо 
     cy.get(`[data-cy='modal']`)
@@ -56,7 +65,7 @@ describe('Тест работы модальных окон', () => {
   });
 
   it('тест закрытия модального окна по крестику', () => {
-    cy.contains('Краторная булка N-200i')
+    cy.contains('кратЕрная булка (от слова кратер)')
       .click();
     //находим кнопку в модалке, нажимаем
     cy.get(`[data-cy='modal']`)
@@ -64,12 +73,13 @@ describe('Тест работы модальных окон', () => {
         .click();
     //проверяем, что модальное окно закрыто
     cy.get(`[data-cy='modal']`)
-      .should('not.exist')
+      .should('not.exist');
   });
-  
+
+ 
   it('тест закрытия модального окна по esc', () => {
     //находим ссылку с кратерной булкой, нажимаем
-    cy.contains('Краторная булка N-200i')
+    cy.contains('кратЕрная булка (от слова кратер)')
       .click();
     //нажимаем на кнопку эскейп
     cy.get('body')
@@ -81,7 +91,7 @@ describe('Тест работы модальных окон', () => {
 
   it('тест закрытия модального окна по оверлею', () => {
     //находим ссылку с кратерной булкой, нажимаем
-    cy.contains('Краторная булка N-200i')
+    cy.contains('кратЕрная булка (от слова кратер)')
       .click();
     //нажимаем на поле вверху экрана (выше модалки)
     cy.get(`[data-cy='modalOverlay']`)
@@ -90,16 +100,17 @@ describe('Тест работы модальных окон', () => {
     cy.get(`[data-cy='modal']`)
       .should('not.exist')
   })
-})
 
-describe('Тест оформления заказа', () => {
   // перехватываем апи размещения заказа и проверяем авторизацию
-  beforeEach(() => {
-    cy.intercept('POST', 'api/orders', { fixture: 'order.json' }).as('order');
-
-    it('Проверка авторизации пользователя перед каждым тестом', function () {
-      cy.get('p').contains('12345').should('exist');
-    });
+  // beforeEach(() => {
+  //   cy.intercept({method: 'POST', url: 'api/orders'}, { fixture: 'order.json' }).as('order');
+  //   cy.wait()
+  // });
+  //проверяем, что имя пользователя в профиле совпадает с fixture
+  it('Проверка авторизации пользователя перед тестом', () => {
+    cy.visit('/profile')
+    cy.get(`[data-cy='profile-name']`)
+      .should('have.value', '12345');
   });
 
   // добавляем в заказ флуоресцентную булку
@@ -111,6 +122,7 @@ describe('Тест оформления заказа', () => {
           .last()
             .find('button')
               .click();
+  
     // добавляем в заказ биокотлету
     cy.get(`[data-cy='ingredients-module']`)
       .next()
@@ -119,6 +131,8 @@ describe('Тест оформления заказа', () => {
             .first()
               .find('button')
                 .click();
+              
+            
     // добавляем в заказ соус антарианского плоскоходца
     cy.get(`[data-cy='ingredients-module']`)
       .last()
@@ -126,6 +140,7 @@ describe('Тест оформления заказа', () => {
           .last()
             .find('button')
               .click()
+  
     //нажимаем на кнопку заказа
     cy.get(`[data-cy='constructor-module']`)
       .children()
@@ -134,6 +149,8 @@ describe('Тест оформления заказа', () => {
             .click()
     
     cy.wait('@order')
+     
+
 
     //проверяем, что модальное окно открылось
     cy.get(`[data-cy='modal']`)
@@ -155,11 +172,5 @@ describe('Тест оформления заказа', () => {
         .first()
           .next()
             .should('contain.text', 'Выберите начинку')
-
-
-    })
-
-    
-    
-  
+  })
 })
