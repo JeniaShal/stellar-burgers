@@ -1,4 +1,4 @@
-import { getOrdersApi } from '@api';
+import { getOrdersApi } from '../../utils/burger-api';
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { TOrder } from '@utils-types';
 
@@ -25,7 +25,7 @@ export const placedOrdersSlice = createSlice({
     builder
       .addCase(getPlacedOrders.rejected, (state, action) => {
         state.isLoading = false;
-        state.error = action.error.message as string;
+        state.error = 'Oшибка загрузки заказов';
       })
       .addCase(getPlacedOrders.pending, (state) => {
         state.isLoading = true;

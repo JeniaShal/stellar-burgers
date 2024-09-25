@@ -20,7 +20,7 @@ export const BurgerConstructor: FC = () => {
   /** TODO: взять переменные constructorItems, orderRequest и orderModalData из стора - done*/
   const dispatch = useDispatch();
   const constructorItems = useSelector(selectConstructorItem);
-  const orderRequest = useSelector(selectOrderRequest);
+  let orderRequest = useSelector(selectOrderRequest);
   const orderModalData = useSelector(selectOrderData);
   const { user } = useSelector(selectUser);
   const navigate = useNavigate();
@@ -37,11 +37,13 @@ export const BurgerConstructor: FC = () => {
       constructorItems.bun._id
     ];
     dispatch(postOrder(orderIngredients));
+    dispatch(clearOrderData());
   };
 
   const closeOrderModal = () => {
     dispatch(emptyConstructor());
     dispatch(clearOrderData());
+    navigate('/');
   };
 
   const price = useMemo(

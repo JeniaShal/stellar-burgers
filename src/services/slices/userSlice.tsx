@@ -98,7 +98,6 @@ export const userSlice = createSlice({
       })
       .addCase(getUser.pending, (state) => {
         state.isLoading = true;
-        console.log(state);
       })
       .addCase(getUser.fulfilled, (state, action) => {
         state.user = action.payload.user;
@@ -121,7 +120,7 @@ export const userSlice = createSlice({
       // updateUser
       .addCase(updateUser.rejected, (state) => {
         state.isLoading = false;
-        state.error = 'обновление пользователя неу удалось';
+        state.error = 'обновление пользователя неудалось';
       })
       .addCase(updateUser.fulfilled, (state, action) => {
         state.isLoading = false;
